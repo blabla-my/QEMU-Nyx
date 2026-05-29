@@ -85,7 +85,7 @@ void handle_hypercall_kafl_nested_prepare(struct kvm_run *run,
 
     read_physical_memory((uint64_t)run->hypercall.args[1], (uint8_t *)buffer,
                          buffer_size, cpu);
-    htos_cr3 = (uint64_t)run->hypercall.args[0];
+    htos_cr3 = (uint64_t)run->hypercall.args[2];
 
     for (uint64_t i = 0; i < (uint64_t)run->hypercall.args[0]; i++) {
         if (i == 0) {
@@ -132,9 +132,8 @@ void handle_hypercall_kafl_nested_release(struct kvm_run *run,
                                           uint64_t        hypercall_arg)
 {
     nyx_trace();
-    // TODO not implemented - see git history for scraps
-    nyx_error("Not implemented.\n");
-    abort();
+    hypercalls_enabled = true;
+    synchronization_disable_pt(cpu);
 }
 
 static inline void set_page_dump_bp_nested(CPUState *cpu, uint64_t cr3, uint64_t addr)
